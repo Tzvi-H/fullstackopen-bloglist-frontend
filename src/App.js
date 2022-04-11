@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,6 +9,7 @@ const App = () => {
   const [ title, setTitle ] = useState('')
   const [ author, setAuthor ] = useState('')
   const [ url, setUrl ] = useState('')
+  const [ notificationMessage, setNotificationMessage ] = useState(null)
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
@@ -41,6 +43,10 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setNotificationMessage(`Welcome ${user.name}`)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 4000);
     } catch (exception) {
       console.log('wrong credentials')
     }
@@ -49,6 +55,10 @@ const App = () => {
   const handleLogout = event => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogappUser')
+    setNotificationMessage(`Logged out successfully`)
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 4000);
   }
 
   const addBlog = event => {
@@ -64,6 +74,10 @@ const App = () => {
       .create(newBlogObject)
       .then(data => {
         setBlogs(blogs.concat(data));
+        setNotificationMessage(`a new blog "${title}" by "${author}" added`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 4000);
         setTitle('')
         setAuthor('')
         setUrl('')
@@ -114,6 +128,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
+        <Notification message={notificationMessage} />
         <h2>Log in to Application</h2>
         {loginForm()}
       </div>
@@ -122,6 +137,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={notificationMessage} />
       <h2>blogs</h2>
       <p>
         {user.name} logged in 
