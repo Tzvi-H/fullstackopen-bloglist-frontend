@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
+
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [ blogs, setBlogs ] = useState([])
-  const [ title, setTitle ] = useState('')
-  const [ author, setAuthor ] = useState('')
-  const [ url, setUrl ] = useState('')
   const [ notificationMessage, setNotificationMessage ] = useState(null)
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
@@ -64,27 +64,16 @@ const App = () => {
       }, 4000);
   }
 
-  const addBlog = event => {
-    event.preventDefault()
-
-    const newBlogObject = {
-      title,
-      author,
-      url
-    }
-
+  const addBlog = blogObject => {
     blogService
-      .create(newBlogObject)
+      .create(blogObject)
       .then(data => {
         blogFormRef.current.toggleVisiblity()
         setBlogs(blogs.concat(data));
-        setNotificationMessage(`a new blog "${title}" by "${author}" added`)
+        setNotificationMessage(`a new blog "${blogObject.title}" by "${blogObject.author}" added`)
         setTimeout(() => {
           setNotificationMessage(null)
         }, 4000);
-        setTitle('')
-        setAuthor('')
-        setUrl('')
       })
   }
 
@@ -114,20 +103,7 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel='new blog' ref={blogFormRef}>
-      <form onSubmit={addBlog}>
-
-        <div>
-          title <input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-        <div>
-          author: <input value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url: <input value={url} onChange={(e) => setUrl(e.target.value)} />
-        </div>
-
-        <button type="submit">create</button>
-      </form>
+      <BlogForm addBlog={addBlog}/>
     </Togglable>
   )
 
