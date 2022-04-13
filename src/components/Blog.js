@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog  }) => {
+const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   const [ showDetails, setShowDetails ] = useState(false)
 
   const toggleShowDetails = () => {
@@ -20,11 +20,23 @@ const Blog = ({ blog, updateBlog  }) => {
     updateBlog(newBlog)
   }
 
+  const handleBlogDelete = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      deleteBlog(blog.id)
+    }
+  }
+
   const detailView = () => (
     <>
     <br/>{blog.url}
     <br/>likes {blog.likes}<button onClick={handleBlogLike}>like</button>
     <br/>{blog.user.name}
+    <br/>
+    {
+      isCurrentUser 
+        ? <button onClick={handleBlogDelete}>remove</button>
+        : null
+    }
     </>
   )
 

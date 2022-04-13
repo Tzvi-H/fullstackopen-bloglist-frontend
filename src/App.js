@@ -71,6 +71,7 @@ const App = () => {
       .create(blogObject)
       .then(data => {
         blogFormRef.current.toggleVisiblity()
+        data.user = user
         setBlogs(blogs.concat(data));
         setNotificationMessage(`a new blog "${blogObject.title}" by "${blogObject.author}" added`)
         setTimeout(() => {
@@ -85,6 +86,18 @@ const App = () => {
       .then(data => {
         setBlogs(blogs.map(b => b.id !== data.id ? b : data))
         setNotificationMessage(`blog "${blogObject.title}" by "${blogObject.author}" liked`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 4000);
+      })
+  }
+
+  const deleteBlog = blogId => {
+    blogService
+      .remove(blogId)
+      .then(() => {
+        setBlogs(blogs.filter(b => b.id !== blogId))
+        setNotificationMessage(`blog successfully deleted`)
         setTimeout(() => {
           setNotificationMessage(null)
         }, 4000);
@@ -144,7 +157,13 @@ const App = () => {
       {blogForm()}
 
       {blogsToShow.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+        <Blog 
+          key={blog.id} 
+          blog={blog} 
+          updateBlog={updateBlog} 
+          deleteBlog={deleteBlog}
+          isCurrentUser={blog.user.username === user.username}
+        />
       )}
     </div>
   )
