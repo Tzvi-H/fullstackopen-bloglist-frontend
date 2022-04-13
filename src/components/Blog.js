@@ -17,7 +17,7 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   }
 
   const handleBlogLike = () => {
-    const newBlog = { ...blog, likes: blog.likes + 1}
+    const newBlog = { ...blog, likes: blog.likes + 1 }
     updateBlog(newBlog)
   }
 
@@ -29,27 +29,27 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
 
   const detailView = () => (
     <>
-    <br/>{blog.url}
-    <br/>likes {blog.likes}<button onClick={handleBlogLike}>like</button>
-    <br/>{blog.user.name}
-    <br/>
-    {
-      isCurrentUser 
-        ? <button onClick={handleBlogDelete}>remove</button>
-        : null
-    }
+      <br/>{blog.url}
+      <br/>likes {blog.likes}<button onClick={handleBlogLike}>like</button>
+      <br/>{blog.user.name}
+      <br/>
+      {
+        isCurrentUser
+          ? <button onClick={handleBlogDelete}>remove</button>
+          : null
+      }
     </>
   )
 
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author} 
+      {blog.title} {blog.author}
       <button onClick={toggleShowDetails}>
         {showDetails ? 'hide' : 'view'}
       </button>
 
       {showDetails ?  detailView() : null}
-    </div>  
+    </div>
   )
 }
 

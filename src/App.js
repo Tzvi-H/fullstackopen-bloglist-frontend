@@ -22,7 +22,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -36,13 +36,13 @@ const App = () => {
 
   const handleLogin = async event => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({ username, password })
 
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
 
       blogService.setToken(user.token)
       setUser(user)
@@ -51,19 +51,19 @@ const App = () => {
       setNotificationMessage(`Welcome ${user.name}`)
       setTimeout(() => {
         setNotificationMessage(null)
-      }, 4000);
+      }, 4000)
     } catch (exception) {
       console.log('wrong credentials')
     }
   }
 
-  const handleLogout = event => {
+  const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogappUser')
-    setNotificationMessage(`Logged out successfully`)
-      setTimeout(() => {
-        setNotificationMessage(null)
-      }, 4000);
+    setNotificationMessage('Logged out successfully')
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 4000)
   }
 
   const addBlog = blogObject => {
@@ -72,11 +72,11 @@ const App = () => {
       .then(data => {
         blogFormRef.current.toggleVisiblity()
         data.user = user
-        setBlogs(blogs.concat(data));
+        setBlogs(blogs.concat(data))
         setNotificationMessage(`a new blog "${blogObject.title}" by "${blogObject.author}" added`)
         setTimeout(() => {
           setNotificationMessage(null)
-        }, 4000);
+        }, 4000)
       })
   }
 
@@ -88,7 +88,7 @@ const App = () => {
         setNotificationMessage(`blog "${blogObject.title}" by "${blogObject.author}" liked`)
         setTimeout(() => {
           setNotificationMessage(null)
-        }, 4000);
+        }, 4000)
       })
   }
 
@@ -97,10 +97,10 @@ const App = () => {
       .remove(blogId)
       .then(() => {
         setBlogs(blogs.filter(b => b.id !== blogId))
-        setNotificationMessage(`blog successfully deleted`)
+        setNotificationMessage('blog successfully deleted')
         setTimeout(() => {
           setNotificationMessage(null)
-        }, 4000);
+        }, 4000)
       })
   }
 
@@ -108,7 +108,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -117,7 +117,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -125,7 +125,7 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
   )
 
   const blogForm = () => (
@@ -149,7 +149,7 @@ const App = () => {
       <Notification message={notificationMessage} />
       <h2>blogs</h2>
       <p>
-        {user.name} logged in 
+        {user.name} logged in
         <button onClick={handleLogout}>log out</button>
       </p>
 
@@ -157,10 +157,10 @@ const App = () => {
       {blogForm()}
 
       {blogsToShow.map(blog =>
-        <Blog 
-          key={blog.id} 
-          blog={blog} 
-          updateBlog={updateBlog} 
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updateBlog={updateBlog}
           deleteBlog={deleteBlog}
           isCurrentUser={blog.user.username === user.username}
         />
