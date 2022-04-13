@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,8 @@ const App = () => {
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ user, setUser ] = useState(null)
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -73,6 +76,7 @@ const App = () => {
     blogService
       .create(newBlogObject)
       .then(data => {
+        blogFormRef.current.toggleVisiblity()
         setBlogs(blogs.concat(data));
         setNotificationMessage(`a new blog "${title}" by "${author}" added`)
         setTimeout(() => {
@@ -109,20 +113,22 @@ const App = () => {
   )
 
   const blogForm = () => (
-    <form onSubmit={addBlog}>
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <form onSubmit={addBlog}>
 
-      <div>
-        title <input value={title} onChange={(e) => setTitle(e.target.value)} />
-      </div>
-      <div>
-        author: <input value={author} onChange={(e) => setAuthor(e.target.value)} />
-      </div>
-      <div>
-        url: <input value={url} onChange={(e) => setUrl(e.target.value)} />
-      </div>
+        <div>
+          title <input value={title} onChange={(e) => setTitle(e.target.value)} />
+        </div>
+        <div>
+          author: <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+        </div>
+        <div>
+          url: <input value={url} onChange={(e) => setUrl(e.target.value)} />
+        </div>
 
-      <button type="submit">create</button>
-    </form>
+        <button type="submit">create</button>
+      </form>
+    </Togglable>
   )
 
   if (user === null) {
