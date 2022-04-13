@@ -17,6 +17,8 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  const blogsToShow = blogs.slice().sort((a, b) => b.likes - a.likes)
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -141,7 +143,7 @@ const App = () => {
       <h2>create new</h2>
       {blogForm()}
 
-      {blogs.map(blog =>
+      {blogsToShow.map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
