@@ -77,6 +77,18 @@ const App = () => {
       })
   }
 
+  const updateBlog = blogObject => {
+    blogService
+      .update(blogObject)
+      .then(data => {
+        setBlogs(blogs.map(b => b.id !== data.id ? b : data))
+        setNotificationMessage(`blog "${blogObject.title}" by "${blogObject.author}" liked`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 4000);
+      })
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -130,7 +142,7 @@ const App = () => {
       {blogForm()}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
       )}
     </div>
   )
