@@ -33,7 +33,7 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
     <>
       <br/>{blog.url}
       <br/>likes {blog.likes}<button onClick={handleBlogLike}>like</button>
-      <br/>{blog.user.name}
+      <br/>{blog.user && blog.user.name}
       <br/>
       {
         isCurrentUser
