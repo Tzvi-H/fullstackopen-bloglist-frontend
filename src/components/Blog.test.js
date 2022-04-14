@@ -6,6 +6,7 @@ import Blog from './Blog'
 
 describe('rendering a blog', () => {
   let container
+  let mockHandler
 
   beforeEach(() => {
     const blog = {
@@ -14,7 +15,9 @@ describe('rendering a blog', () => {
       url: 'www.idonotexist.com',
     }
 
-    container = render(<Blog blog={blog} />).container
+    mockHandler = jest.fn()
+
+    container = render(<Blog blog={blog} updateBlog={mockHandler}/>).container
   })
 
   test('renders it\'s title and author', () => {
@@ -28,12 +31,21 @@ describe('rendering a blog', () => {
   })
 
   describe('and clicking on the view button', () => {
-    test('renders the url and likes', () => {
+    beforeEach(() => {
       const button = screen.getByText('view')
       userEvent.click(button)
+    })
 
+    test('renders the url and likes', () => {
       expect(container).toHaveTextContent('www.idonotexist.com')
       expect(container).toHaveTextContent('likes')
+    })
+
+    test('will invoke the handler function twice when clicking the like button twice', () => {
+      const button = screen.getByText('like')
+      userEvent.click(button)
+      userEvent.click(button)
+      expect(mockHandler.mock.calls).toHaveLength(2)
     })
   })
 })
