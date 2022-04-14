@@ -1,7 +1,5 @@
 import { useState } from 'react'
-
-// Commented out for testing
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   const [ showDetails, setShowDetails ] = useState(false)
@@ -55,12 +53,11 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   )
 }
 
-// Commented out for testing
-// Blog.propTypes = {
-//   blog: PropTypes.object.isRequired,
-//   updateBlog: PropTypes.func.isRequired,
-//   deleteBlog: PropTypes.func.isRequired,
-//   isCurrentUser: PropTypes.bool.isRequired,
-// }
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  updateBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
+  isCurrentUser: PropTypes.bool.isRequired,
+}
 
 export default Blog
