@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+
+// Commented out for testing
+// import PropTypes from 'prop-types'
 
 const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   const [ showDetails, setShowDetails ] = useState(false)
@@ -42,7 +44,7 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   )
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author}
       <button onClick={toggleShowDetails}>
         {showDetails ? 'hide' : 'view'}
@@ -53,13 +55,12 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
   )
 }
 
-// const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  isCurrentUser: PropTypes.bool.isRequired,
-}
+// Commented out for testing
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   updateBlog: PropTypes.func.isRequired,
+//   deleteBlog: PropTypes.func.isRequired,
+//   isCurrentUser: PropTypes.bool.isRequired,
+// }
 
 export default Blog
