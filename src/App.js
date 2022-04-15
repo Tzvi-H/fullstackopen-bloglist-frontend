@@ -162,7 +162,7 @@ const App = () => {
           blog={blog}
           updateBlog={updateBlog}
           deleteBlog={deleteBlog}
-          isCurrentUser={blog.user.username === user.username}
+          isCurrentUser={blog.user !== null && blog.user.username === user.username}
         />
       )}
     </div>
