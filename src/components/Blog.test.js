@@ -17,7 +17,7 @@ describe('rendering a blog', () => {
 
     mockHandler = jest.fn()
 
-    container = render(<Blog blog={blog} updateBlog={mockHandler}/>).container
+    container = render(<Blog blog={blog} updateBlog={mockHandler} deleteBlog={mockHandler} isCurrentUser={true}/>).container
   })
 
   test('renders it\'s title and author', () => {
