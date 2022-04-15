@@ -59,6 +59,13 @@ describe('Blog app', function() {
         cy.get('@blog2').contains('like').click()
         cy.get('@blog2').contains('likes 1')
       })
+
+      it('blog can be deleted by owner', function() {
+        cy.contains('third blog').as('blog3').contains('view').click()
+        cy.get('@blog3').contains('remove').click()
+        cy.get('html').should('not.contain', 'blog3')
+        cy.contains('blog successfully deleted')
+      })
     })
   })
 })
