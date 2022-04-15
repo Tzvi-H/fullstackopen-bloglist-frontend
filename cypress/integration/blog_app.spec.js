@@ -46,5 +46,19 @@ describe('Blog app', function() {
       cy.contains('a new blog "a new cypress blog" by "cypress" added')
       cy.contains('a new cypress blog cypressview')
     })
+
+    describe('and some blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog({ title: 'first blog', author: 'author 1', url: 'url1.com' })
+        cy.createBlog({ title: 'second blog', author: 'author 2', url: 'url2.com' })
+        cy.createBlog({ title: 'third blog', author: 'author 3', url: 'url3.com' })
+      })
+
+      it('one of those can be made important', function () {
+        cy.contains('second blog').as('blog2').contains('view').click()
+        cy.get('@blog2').contains('like').click()
+        cy.get('@blog2').contains('likes 1')
+      })
+    })
   })
 })
