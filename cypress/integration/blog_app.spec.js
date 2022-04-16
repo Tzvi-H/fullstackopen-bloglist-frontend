@@ -66,6 +66,14 @@ describe('Blog app', function() {
         cy.get('html').should('not.contain', 'blog3')
         cy.contains('blog successfully deleted')
       })
+
+      it('blogs are ordered by likes (in decreasing order)', function() {
+        cy.likeBlog('third blog', 3)
+
+        cy.get('.blog').then(blogs => {
+          cy.wrap(blogs[0]).contains('third blog')
+        })
+      })
     })
   })
 })
