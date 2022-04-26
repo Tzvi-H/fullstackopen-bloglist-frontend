@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { useDispatch } from "react-redux";
+
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
@@ -7,13 +9,15 @@ import BlogForm from "./components/BlogForm";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import { notificationChange } from "./reducers/notificationReducer";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [notificationMessage, setNotificationMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
+  const dispatch = useDispatch();
 
   const blogFormRef = useRef();
 
@@ -44,9 +48,9 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-      setNotificationMessage(`Welcome ${user.name}`);
+      dispatch(notificationChange(`Welcome ${user.name}`));
       setTimeout(() => {
-        setNotificationMessage(null);
+        dispatch(notificationChange(null));
       }, 4000);
     } catch (exception) {
       console.log("wrong credentials");
@@ -56,9 +60,9 @@ const App = () => {
   const handleLogout = () => {
     setUser(null);
     window.localStorage.removeItem("loggedBlogappUser");
-    setNotificationMessage("Logged out successfully");
+    dispatch(notificationChange("Logged out successfully"));
     setTimeout(() => {
-      setNotificationMessage(null);
+      dispatch(notificationChange(null));
     }, 4000);
   };
 
@@ -67,11 +71,13 @@ const App = () => {
       blogFormRef.current.toggleVisiblity();
       data.user = user;
       setBlogs(blogs.concat(data));
-      setNotificationMessage(
-        `a new blog "${blogObject.title}" by "${blogObject.author}" added`
+      dispatch(
+        notificationChange(
+          `a new blog "${blogObject.title}" by "${blogObject.author}" added`
+        )
       );
       setTimeout(() => {
-        setNotificationMessage(null);
+        dispatch(notificationChange(null));
       }, 4000);
     });
   };
@@ -79,11 +85,13 @@ const App = () => {
   const updateBlog = (blogObject) => {
     blogService.update(blogObject).then((data) => {
       setBlogs(blogs.map((b) => (b.id !== data.id ? b : data)));
-      setNotificationMessage(
-        `blog "${blogObject.title}" by "${blogObject.author}" liked`
+      dispatch(
+        notificationChange(
+          `blog "${blogObject.title}" by "${blogObject.author}" liked`
+        )
       );
       setTimeout(() => {
-        setNotificationMessage(null);
+        dispatch(notificationChange(null));
       }, 4000);
     });
   };
@@ -91,9 +99,9 @@ const App = () => {
   const deleteBlog = (blogId) => {
     blogService.remove(blogId).then(() => {
       setBlogs(blogs.filter((b) => b.id !== blogId));
-      setNotificationMessage("blog successfully deleted");
+      dispatch(notificationChange("blog successfully deleted"));
       setTimeout(() => {
-        setNotificationMessage(null);
+        dispatch(notificationChange(null));
       }, 4000);
     });
   };
@@ -135,7 +143,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification message={notificationMessage} />
+        <Notification />
         <h2>Log in to Application</h2>
         {loginForm()}
       </div>
@@ -144,7 +152,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={notificationMessage} />
+      <Notification />
       <h2>blogs</h2>
       <p>
         {user.name} logged in
