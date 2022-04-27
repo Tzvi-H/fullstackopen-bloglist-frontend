@@ -4,7 +4,7 @@ import blogReducer from "./reducers/blogReducer";
 
 const reducer = combineReducers({
   notification: notificationReducer,
-  blogs: blogReducer
+  blogs: blogReducer,
 });
 
 const store = createStore(reducer);

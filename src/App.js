@@ -10,7 +10,7 @@ import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { notificationChange } from "./reducers/notificationReducer";
-import { blogsInit, blogsAdd } from "./reducers/blogReducer";
+import { blogsSet, blogsAdd } from "./reducers/blogReducer";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -26,7 +26,7 @@ const App = () => {
   const blogsToShow = blogs.slice().sort((a, b) => b.likes - a.likes);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => dispatch(blogsInit(blogs)));
+    blogService.getAll().then((blogs) => dispatch(blogsSet(blogs)));
   }, []);
 
   useEffect(() => {
@@ -85,27 +85,27 @@ const App = () => {
   };
 
   const updateBlog = (blogObject) => {
-    // blogService.update(blogObject).then((data) => {
-    //   setBlogs(blogs.map((b) => (b.id !== data.id ? b : data)));
-    //   dispatch(
-    //     notificationChange(
-    //       `blog "${blogObject.title}" by "${blogObject.author}" liked`
-    //     )
-    //   );
-    //   setTimeout(() => {
-    //     dispatch(notificationChange(null));
-    //   }, 4000);
-    // }); 
+    blogService.update(blogObject).then((data) => {
+      dispatch(blogsSet(blogs.map((b) => (b.id !== data.id ? b : data))));
+      dispatch(
+        notificationChange(
+          `blog "${blogObject.title}" by "${blogObject.author}" liked`
+        )
+      );
+      setTimeout(() => {
+        dispatch(notificationChange(null));
+      }, 4000);
+    });
   };
 
   const deleteBlog = (blogId) => {
-    // blogService.remove(blogId).then(() => {
-    //   setBlogs(blogs.filter((b) => b.id !== blogId));
-    //   dispatch(notificationChange("blog successfully deleted"));
-    //   setTimeout(() => {
-    //     dispatch(notificationChange(null));
-    //   }, 4000);
-    // });
+    blogService.remove(blogId).then(() => {
+      dispatch(blogsSet(blogs.filter((b) => b.id !== blogId)));
+      dispatch(notificationChange("blog successfully deleted"));
+      setTimeout(() => {
+        dispatch(notificationChange(null));
+      }, 4000);
+    });
   };
 
   const loginForm = () => (

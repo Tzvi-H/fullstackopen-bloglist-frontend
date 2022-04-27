@@ -5,22 +5,22 @@ const blogReducer = (state = [], action) => {
     case "ADD_BLOG":
       return state.concat(action.data);
     default:
-      return state
+      return state;
   }
 };
 
-export const blogsInit = blogs => {
+export const blogsSet = (blogs) => {
   return {
     type: "INIT_BLOGS",
     data: blogs,
   };
-}
+};
 
-export const blogsAdd = blog => {
+export const blogsAdd = (blog) => {
   return {
     type: "ADD_BLOG",
     data: blog,
   };
-}
+};
 
 export default blogReducer;
