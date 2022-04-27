@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import {
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useNavigate,
+  useMatch,
+} from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import Blog from "./components/Blog";
@@ -9,6 +18,7 @@ import BlogForm from "./components/BlogForm";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import usersService from "./services/users";
 
 import { notificationChange } from "./reducers/notificationReducer";
 import { blogsSet, blogsAdd } from "./reducers/blogReducer";
@@ -17,18 +27,28 @@ import { userSet } from "./reducers/userReducer";
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [users, setUsers] = useState([]);
 
-  const user = useSelector((state) => state.user);
+  const loggedInUser = useSelector((state) => state.user);
   const blogs = useSelector((state) => state.blogs);
 
   const dispatch = useDispatch();
 
   const blogFormRef = useRef();
 
+  const match = useMatch("/users/:id");
+  const user = match ? users.find((user) => user.id === match.params.id) : null;
+
   const blogsToShow = blogs.slice().sort((a, b) => b.likes - a.likes);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(blogsSet(blogs)));
+  }, []);
+
+  useEffect(() => {
+    usersService.getAll().then((users) => {
+      setUsers(users);
+    });
   }, []);
 
   useEffect(() => {
@@ -73,7 +93,7 @@ const App = () => {
   const addBlog = (blogObject) => {
     blogService.create(blogObject).then((data) => {
       blogFormRef.current.toggleVisiblity();
-      data.user = user;
+      data.user = loggedInUser;
       dispatch(blogsAdd(data));
       dispatch(
         notificationChange(
@@ -144,7 +164,69 @@ const App = () => {
     </Togglable>
   );
 
-  if (user === null) {
+  const CreateView = () => (
+    <>
+      <h2>create new</h2>
+      {blogForm()}
+
+      {blogsToShow.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updateBlog={updateBlog}
+          deleteBlog={deleteBlog}
+          isCurrentUser={
+            blog.user !== null && blog.user.username === loggedInUser.username
+          }
+        />
+      ))}
+    </>
+  );
+
+  const User = ({ user }) => {
+    if (!user) {
+      return null;
+    }
+    return (
+      <div>
+        <h3>{user.name}</h3>
+        <h2>added blogs</h2>
+        <ul>
+          {user.blogs.map((blog) => (
+            <li key={blog.id}>{blog.title}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const Users = ({ users }) => {
+    return (
+      <div>
+        <h2>Users</h2>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>blogs created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>
+                  <Link to={`/users/${user.id}`}>{user.name}</Link>
+                </td>
+                <td>{user.blogs.length}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  if (loggedInUser === null) {
     return (
       <div>
         <Notification />
@@ -159,24 +241,15 @@ const App = () => {
       <Notification />
       <h2>blogs</h2>
       <p>
-        {user.name} logged in
+        {loggedInUser.name} logged in
         <button onClick={handleLogout}>log out</button>
       </p>
 
-      <h2>create new</h2>
-      {blogForm()}
-
-      {blogsToShow.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateBlog={updateBlog}
-          deleteBlog={deleteBlog}
-          isCurrentUser={
-            blog.user !== null && blog.user.username === user.username
-          }
-        />
-      ))}
+      <Routes>
+        <Route path="/users/:id" element={<User user={user} />} />
+        <Route path="/users" element={<Users users={users} />} />
+        <Route path="/" element={<CreateView />} />
+      </Routes>
     </div>
   );
 };
