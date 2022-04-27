@@ -36,10 +36,25 @@ const App = () => {
 
   const blogFormRef = useRef();
 
-  const match = useMatch("/users/:id");
-  const user = match ? users.find((user) => user.id === match.params.id) : null;
+  const userMatch = useMatch("/users/:id");
+  const user = userMatch
+    ? users.find((user) => user.id === userMatch.params.id)
+    : null;
+
+  const blogMatch = useMatch("/blogs/:id");
+  const blog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
+    : null;
 
   const blogsToShow = blogs.slice().sort((a, b) => b.likes - a.likes);
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5,
+  };
 
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(blogsSet(blogs)));
@@ -169,16 +184,14 @@ const App = () => {
       <h2>create new</h2>
       {blogForm()}
 
+      {blogsToShow.map((blog) => {})}
+
       {blogsToShow.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateBlog={updateBlog}
-          deleteBlog={deleteBlog}
-          isCurrentUser={
-            blog.user !== null && blog.user.username === loggedInUser.username
-          }
-        />
+        <div className="blog" style={blogStyle} key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>
+            {blog.title} {blog.author}
+          </Link>
+        </div>
       ))}
     </>
   );
@@ -248,6 +261,22 @@ const App = () => {
       <Routes>
         <Route path="/users/:id" element={<User user={user} />} />
         <Route path="/users" element={<Users users={users} />} />
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              key={blog && blog.id}
+              blog={blog}
+              updateBlog={updateBlog}
+              deleteBlog={deleteBlog}
+              isCurrentUser={
+                blog &&
+                blog.user !== null &&
+                blog.user.username === loggedInUser.username
+              }
+            />
+          }
+        />
         <Route path="/" element={<CreateView />} />
       </Routes>
     </div>

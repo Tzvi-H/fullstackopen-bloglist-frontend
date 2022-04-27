@@ -1,20 +1,7 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-
 const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
-  const [showDetails, setShowDetails] = useState(false);
-
-  const toggleShowDetails = () => {
-    setShowDetails(!showDetails);
-  };
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
+  if (!blog) {
+    return null;
+  }
 
   const handleBlogLike = () => {
     const newBlog = { ...blog, likes: blog.likes + 1 };
@@ -27,38 +14,22 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
     }
   };
 
-  const detailView = () => (
-    <>
+  return (
+    <div>
+      <h1>
+        {blog.title} {blog.author}
+      </h1>
+      <a>{blog.url}</a>
       <br />
-      {blog.url}
+      {blog.likes} likes<button onClick={handleBlogLike}>like</button>
       <br />
-      likes {blog.likes}
-      <button onClick={handleBlogLike}>like</button>
-      <br />
-      {blog.user && blog.user.name}
+      added by {blog.user && blog.user.name}
       <br />
       {isCurrentUser ? (
         <button onClick={handleBlogDelete}>remove</button>
       ) : null}
-    </>
-  );
-
-  return (
-    <div style={blogStyle} className="blog">
-      {blog.title} {blog.author}
-      <button onClick={toggleShowDetails}>
-        {showDetails ? "hide" : "view"}
-      </button>
-      {showDetails ? detailView() : null}
     </div>
   );
-};
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  isCurrentUser: PropTypes.bool.isRequired,
 };
 
 export default Blog;
