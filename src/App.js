@@ -249,14 +249,32 @@ const App = () => {
     );
   }
 
+  const padding = {
+    padding: 5,
+  };
+
   return (
     <div>
+      <div>
+        <Link style={padding} to="/">
+          home
+        </Link>
+        <Link style={padding} to="/blogs">
+          blogs
+        </Link>
+        <Link style={padding} to="/users">
+          users
+        </Link>
+        {loggedInUser && (
+          <>
+            {loggedInUser.name} logged in
+            <button onClick={handleLogout}>log out</button>
+          </>
+        )}
+      </div>
+
       <Notification />
       <h2>blogs</h2>
-      <p>
-        {loggedInUser.name} logged in
-        <button onClick={handleLogout}>log out</button>
-      </p>
 
       <Routes>
         <Route path="/users/:id" element={<User user={user} />} />
@@ -277,6 +295,7 @@ const App = () => {
             />
           }
         />
+        <Route path="/blogs" element={<CreateView />} />
         <Route path="/" element={<CreateView />} />
       </Routes>
     </div>
