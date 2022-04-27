@@ -25,6 +25,9 @@ module.exports = {
           "off",
           2  
       ],
+      "no-unused-vars": [
+        "off"
+      ],
       "linebreak-style": [
           "error",
           "unix"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
@@ -10,12 +10,14 @@ import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { notificationChange } from "./reducers/notificationReducer";
+import { blogsInit, blogsAdd } from "./reducers/blogReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
+  const blogs = useSelector((state) => state.blogs);
 
   const dispatch = useDispatch();
 
@@ -24,7 +26,7 @@ const App = () => {
   const blogsToShow = blogs.slice().sort((a, b) => b.likes - a.likes);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => dispatch(blogsInit(blogs)));
   }, []);
 
   useEffect(() => {
@@ -70,7 +72,7 @@ const App = () => {
     blogService.create(blogObject).then((data) => {
       blogFormRef.current.toggleVisiblity();
       data.user = user;
-      setBlogs(blogs.concat(data));
+      dispatch(blogsAdd(data));
       dispatch(
         notificationChange(
           `a new blog "${blogObject.title}" by "${blogObject.author}" added`
@@ -83,27 +85,27 @@ const App = () => {
   };
 
   const updateBlog = (blogObject) => {
-    blogService.update(blogObject).then((data) => {
-      setBlogs(blogs.map((b) => (b.id !== data.id ? b : data)));
-      dispatch(
-        notificationChange(
-          `blog "${blogObject.title}" by "${blogObject.author}" liked`
-        )
-      );
-      setTimeout(() => {
-        dispatch(notificationChange(null));
-      }, 4000);
-    });
+    // blogService.update(blogObject).then((data) => {
+    //   setBlogs(blogs.map((b) => (b.id !== data.id ? b : data)));
+    //   dispatch(
+    //     notificationChange(
+    //       `blog "${blogObject.title}" by "${blogObject.author}" liked`
+    //     )
+    //   );
+    //   setTimeout(() => {
+    //     dispatch(notificationChange(null));
+    //   }, 4000);
+    // });
   };
 
   const deleteBlog = (blogId) => {
-    blogService.remove(blogId).then(() => {
-      setBlogs(blogs.filter((b) => b.id !== blogId));
-      dispatch(notificationChange("blog successfully deleted"));
-      setTimeout(() => {
-        dispatch(notificationChange(null));
-      }, 4000);
-    });
+    // blogService.remove(blogId).then(() => {
+    //   setBlogs(blogs.filter((b) => b.id !== blogId));
+    //   dispatch(notificationChange("blog successfully deleted"));
+    //   setTimeout(() => {
+    //     dispatch(notificationChange(null));
+    //   }, 4000);
+    // });
   };
 
   const loginForm = () => (
