@@ -135,6 +135,20 @@ const App = () => {
     });
   };
 
+  const addComment = (id, comment) => {
+    blogService.addComment(id, comment).then((data) => {
+      dispatch(blogsSet(blogs.map((b) => (b.id !== data.id ? b : data))));
+      dispatch(
+        notificationChange(
+          `added comment "${comment}" to  "${data.title}"`
+        )
+      );
+      setTimeout(() => {
+        dispatch(notificationChange(null));
+      }, 4000);
+    });
+  }
+
   const deleteBlog = (blogId) => {
     blogService.remove(blogId).then(() => {
       dispatch(blogsSet(blogs.filter((b) => b.id !== blogId)));
@@ -287,6 +301,7 @@ const App = () => {
               blog={blog}
               updateBlog={updateBlog}
               deleteBlog={deleteBlog}
+              addComment={addComment}
               isCurrentUser={
                 blog &&
                 blog.user !== null &&

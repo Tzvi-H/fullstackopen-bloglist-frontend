@@ -1,5 +1,6 @@
-const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
-  // console.log(blog)
+import axios from 'axios'
+
+const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog, addComment }) => {
   if (!blog) {
     return null;
   }
@@ -14,6 +15,15 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
       deleteBlog(blog.id);
     }
   };
+
+  const submitComment = async event => {
+    event.preventDefault();
+    const comment = event.target.comment.value
+
+    await addComment(blog.id, comment)
+    
+    event.target.reset()
+  }
 
   return (
     <div>
@@ -30,12 +40,20 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
         <button onClick={handleBlogDelete}>remove</button>
       ) : null}
 
-      <h3>comments</h3>
-      <ul>
-        {blog.comments.map(c => (
-          <li key={c}>{c}</li>
-        ))}
-      </ul>
+      <div>
+        <h3>comments</h3>
+
+        <form onSubmit={submitComment}>
+          <input type="text" name="comment"/>
+          <input type="submit" value="add comment"/>
+        </form>
+
+        <ul>
+          {blog.comments.map(c => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
