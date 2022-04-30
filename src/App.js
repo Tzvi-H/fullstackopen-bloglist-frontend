@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from 'styled-components'
 
 import {
   Routes,
@@ -23,6 +24,12 @@ import usersService from "./services/users";
 import { notificationChange } from "./reducers/notificationReducer";
 import { blogsSet, blogsAdd } from "./reducers/blogReducer";
 import { userSet } from "./reducers/userReducer";
+
+const BlogDiv = styled.div`
+  padding: 4px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.2);
+`
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -201,11 +208,11 @@ const App = () => {
       {blogsToShow.map((blog) => {})}
 
       {blogsToShow.map((blog) => (
-        <div className="blog" style={blogStyle} key={blog.id}>
+        <BlogDiv className="blog" style={blogStyle} key={blog.id}>
           <Link to={`/blogs/${blog.id}`}>
             {blog.title} {blog.author}
           </Link>
-        </div>
+        </BlogDiv>
       ))}
     </>
   );
