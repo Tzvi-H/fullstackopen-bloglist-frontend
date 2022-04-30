@@ -1,4 +1,5 @@
 const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
+  // console.log(blog)
   if (!blog) {
     return null;
   }
@@ -28,6 +29,13 @@ const Blog = ({ blog, updateBlog, isCurrentUser, deleteBlog }) => {
       {isCurrentUser ? (
         <button onClick={handleBlogDelete}>remove</button>
       ) : null}
+
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map(c => (
+          <li key={c}>{c}</li>
+        ))}
+      </ul>
     </div>
   );
 };
